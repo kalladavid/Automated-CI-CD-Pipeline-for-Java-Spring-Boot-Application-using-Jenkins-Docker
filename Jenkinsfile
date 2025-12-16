@@ -13,7 +13,9 @@ pipeline {
 
         stage('Checkout Code') {
             steps {
-                git 'https://github.com/kalladavid/Automated-CI-CD-Pipeline-for-Java-Spring-Boot-Application-using-Jenkins-Docker.git'
+                git branch: 'main',
+    url: 'https://github.com/kalladavid/Automated-CI-CD-Pipeline-for-Java-Spring-Boot-Application-using-Jenkins-Docker.git'
+
             }
         }
 
