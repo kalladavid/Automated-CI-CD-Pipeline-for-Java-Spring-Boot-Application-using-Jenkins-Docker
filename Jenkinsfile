@@ -6,7 +6,7 @@ pipeline {
     }
 
     environment {
-        DOCKER_IMAGE = "yourdockerhub/employee-app"
+        DOCKER_IMAGE = "kalla201/employee-app"
     }
 
     stages {
@@ -31,9 +31,9 @@ pipeline {
 
         stage('Push Image to Docker Hub') {
             steps {
-                withCredentials([string(credentialsId: 'dockerhub-pass', variable: 'PASS')]) {
+                withCredentials([string(credentialsId: 'Noeljohn@123', variable: 'PASS')]) {
                     sh '''
-                    docker login -u yourdockerhub -p $PASS
+                    docker login -u kalla201 -p $PASS
                     docker push $DOCKER_IMAGE:latest
                     '''
                 }
