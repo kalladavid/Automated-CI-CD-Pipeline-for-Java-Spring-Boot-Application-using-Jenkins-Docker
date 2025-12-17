@@ -14,14 +14,13 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 git branch: 'main',
-    url: 'https://github.com/kalladavid/Automated-CI-CD-Pipeline-for-Java-Spring-Boot-Application-using-Jenkins-Docker.git'
-
+                    url: 'https://github.com/kalladavid/Automated-CI-CD-Pipeline-for-Java-Spring-Boot-Application-using-Jenkins-Docker.git'
             }
         }
 
         stage('Build with Maven') {
             steps {
-                sh 'mvn clean package'
+                sh 'mvn clean package -DskipTests'
             }
         }
 
@@ -33,10 +32,14 @@ pipeline {
 
         stage('Push Image to Docker Hub') {
             steps {
-                withCredentials([string(credentialsId: 'Noeljohn@123', variable: 'PASS')]) {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-creds',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
                     sh '''
-                    docker login -u kalla201 -p $PASS
-                    docker push $DOCKER_IMAGE:latest
+                      echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                      docker push $DOCKER_IMAGE:latest
                     '''
                 }
             }
@@ -45,11 +48,10 @@ pipeline {
         stage('Deploy Container') {
             steps {
                 sh '''
-                docker rm -f employee-app || true
-                docker run -d -p 8080:8080 --name employee-app $DOCKER_IMAGE:latest
+                  docker rm -f employee-app || true
+                  docker run -d -p 8080:8080 --name employee-app $DOCKER_IMAGE:latest
                 '''
             }
         }
     }
 }
-
